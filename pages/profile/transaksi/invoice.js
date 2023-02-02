@@ -175,7 +175,7 @@ export default function Detail() {
                             >
                               <span className='text-xxs sm:text-xs leading-xxs'>Harga Produk</span>
                             </th>
-                            <th
+                            {/* <th
                               scope="col"
                               className="px-1 py-0.5 md:px-6 md:py-3 bg-wi-blue text-left font-medium text-white uppercase tracking-wider border border-black"
                             >
@@ -186,7 +186,7 @@ export default function Detail() {
                               className="px-1 py-0.5 md:px-6 md:py-3 bg-wi-blue text-left font-medium text-white uppercase tracking-wider border border-black"
                             >
                               <span className='text-xxs sm:text-xs'>Harga Diskon</span>
-                            </th>
+                            </th> */}
                             <th
                               scope="col"
                               className="px-1 py-0.5 md:px-6 md:py-3 bg-wi-blue text-left font-medium text-white uppercase tracking-wider border border-black"
@@ -242,12 +242,12 @@ export default function Detail() {
                                   <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
                                     {currencyConverter(cart.product.price)}
                                   </td>
-                                  <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
+                                  {/* <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
                                     {cart?.discount_percentage ? cart?.discount_percentage+'%' : '-'}
                                   </td>
                                   <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
                                     {currencyConverter((cart.unit_price * cart?.discount_percentage/100))}
-                                  </td>
+                                  </td> */}
                                   <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
                                     {currencyConverter(cart.final_unit_price)}
                                   </td>
@@ -257,7 +257,7 @@ export default function Detail() {
                             ))
                           }
                           <tr className={'bg-white'} key='total'>
-                            <td colSpan={5} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-right font-semibold text-gray-900 border border-black">
+                            <td colSpan={3} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-right font-semibold text-gray-900 border border-black">
                               Total
                             </td>
                             <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm font-semibold text-gray-900 border border-black">
@@ -265,11 +265,11 @@ export default function Detail() {
                             </td>
                           </tr>
                           <tr className={'bg-white'} key={1}>
-                            <td colSpan={6} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap">
+                            <td colSpan={4} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap">
                             </td>
                           </tr>
                           <tr className={'bg-white'} key={1}>
-                            <td colSpan={5} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 text-right border border-black">
+                            <td colSpan={3} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 text-right border border-black">
                               Biaya Layanan
                             </td>
                             <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
@@ -278,7 +278,7 @@ export default function Detail() {
                             </td>
                           </tr>
                           <tr className={'bg-white'} key={2}>
-                            <td colSpan={5} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 text-right border border-black">
+                            <td colSpan={3} className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 text-right border border-black">
                               Total Pembayaran
                             </td>
                             <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">

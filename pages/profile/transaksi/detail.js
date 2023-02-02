@@ -397,7 +397,7 @@ function generateInfoBasedOnStatus(state) {
             />
 
             {order.status === BackendOrderStatus.COMPLETED && order?.payment.status === 'PENDING' ? (
-              <Button className="text-sm w-full text-dnr-primary hover:text-white hover:bg-wi-blue border border-wi-blue bg-transparent-force">Barang telah diterima oleh pembeli</Button>
+              <Button className="text-sm w-full text-wi-blue hover:text-white hover:bg-wi-blue border border-wi-blue bg-transparent-force">Barang telah diterima oleh pembeli</Button>
             ) : (
               <Button color="turqoise" type="border" className="text-sm w-full" onClick={() => setOpenTracking(true)}>
                 Status Pengiriman
