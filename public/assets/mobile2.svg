@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="19.117" viewBox="0 0 20 19.117">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+        stroke: #707070;
+      }
+
+      .cls-1 {
+        stroke-linejoin: round;
+      }
+
+      .cls-3 {
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <g id="Group_8018" data-name="Group 8018" transform="translate(-302.5 -428.5)">
+    <path id="Path_13627" data-name="Path 13627" class="cls-1" d="M303.792,429.264l8.241,3.3a1.583,1.583,0,0,1,1,1.47v11.491a1.583,1.583,0,0,1-2.1,1.5l-6.861-2.347a1.583,1.583,0,0,1-1.071-1.5V430.583A1.583,1.583,0,0,1,304.583,429h10.556a1.583,1.583,0,0,1,1.583,1.583v12.139a1.583,1.583,0,0,1-1.583,1.583h-2.111"/>
+    <circle id="Ellipse_5898" data-name="Ellipse 5898" class="cls-2" cx="0.924" cy="0.924" r="0.924" transform="translate(309.729 438.368)"/>
+    <path id="Path_13628" data-name="Path 13628" class="cls-1" d="M334.5,439.5l2.375,2.375L334.5,444.25" transform="translate(-14.875 -4.958)"/>
+    <line id="Line_139" data-name="Line 139" class="cls-3" x1="4.75" transform="translate(316.986 436.917)"/>
+  </g>
+</svg>

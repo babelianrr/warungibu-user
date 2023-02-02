@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17.945" height="19.076" viewBox="0 0 17.945 19.076">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #707070;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+  <g id="Group_8021" data-name="Group 8021" transform="translate(-367.5 -96.424)">
+    <path id="Path_11347" data-name="Path 11347" class="cls-1" d="M375.3,97.415l-7.109,5.776a.531.531,0,0,0-.2.411v10.869a.529.529,0,0,0,.53.53H373.3a.529.529,0,0,0,.53-.53v-6.884a.53.53,0,0,1,.53-.53h4.237a.53.53,0,0,1,.53.53v6.884a.529.529,0,0,0,.53.53h4.766a.529.529,0,0,0,.53-.53V103.6a.531.531,0,0,0-.2-.411l-7.109-5.776A1.853,1.853,0,0,0,375.3,97.415Z" transform="translate(0 0)"/>
+  </g>
+</svg>

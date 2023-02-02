@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35.962" height="35.962" viewBox="0 0 35.962 35.962">
+  <g id="medical_check" data-name="medical check" transform="translate(0.75 0.75)">
+    <path id="Path_11500" data-name="Path 11500" d="M302,333.627a36.109,36.109,0,0,0,7.782,5.674s12.228-6.311,12.228-14.3a6.816,6.816,0,0,0-6.584-7" transform="translate(-297.553 -316.888)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_11501" data-name="Path 11501" d="M300.584,318A6.816,6.816,0,0,0,294,325a10.279,10.279,0,0,0,2.03,5.78" transform="translate(-294 -316.888)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <circle id="Ellipse_1461" data-name="Ellipse 1461" cx="1.667" cy="1.667" r="1.667" transform="translate(6.67)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <circle id="Ellipse_1462" data-name="Ellipse 1462" cx="1.667" cy="1.667" r="1.667" transform="translate(14.452)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_11502" data-name="Path 11502" d="M333.231,359.223v.834a8.641,8.641,0,0,1-8.615,8.615h0A8.641,8.641,0,0,1,316,360.057V357" transform="translate(-303.772 -334.211)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_11503" data-name="Path 11503" d="M340.779,356.479a5,5,0,1,1,4.447,0" transform="translate(-313.543 -329.769)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <circle id="Ellipse_1463" data-name="Ellipse 1463" cx="2.223" cy="2.223" r="2.223" transform="translate(27.236 20.01)" fill="none" stroke="#2394ba" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Path_11504" data-name="Path 11504" d="M294,335.67h5l1.667-2.779,2.779,5.558L306.784,329l2.779,6.67h2.779" transform="translate(-294 -321.774)" fill="none" stroke="#2394ba" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+</svg>

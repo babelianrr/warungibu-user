@@ -1,0 +1,16 @@
+/* :root {
+  --gray: #F5F5F5;
+  --white: #ffffff;
+  --orange: #FBEEE3;
+  --blue: #1D4A8F;
+}
+
+
+body {
+  background-color: var(--gray) !important;
+} */
+
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
