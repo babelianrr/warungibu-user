@@ -70,7 +70,7 @@ export default function Home({categories, banners, activeFlashSale}) {
             <BicartPoint loanLimit={data?.loan_limit} />
           </AccessComp>
           <CategoryList categories={categories} type={'produk'} />
-          <CategoryList categories={harian} type={'kebutuhan'} />
+          {/* <CategoryList categories={harian} type={'kebutuhan'} /> */}
           {/* <PromoList /> */}
           {flashSale ? (
             <>
