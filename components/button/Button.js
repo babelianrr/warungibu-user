@@ -1,3 +1,5 @@
+import { classNames } from "helpers/classNames"
+
 export default function Button({
   children,
   onClick,
@@ -6,6 +8,7 @@ export default function Button({
   padding = 'py-3 px-3',
   color = 'primary',
   bgHover = true,
+  bg = 'bg-wi-blue',
   ...rest
 }) {
   const colors = {
@@ -17,18 +20,18 @@ export default function Button({
   if (type === 'border') {
     return (
       <button
-        className={`bg-white border ${colors[color]} rounded-md shadow ${padding} flex items-center justify-center  focus:outline-none hover:text-white ${className}`}
+        className={classNames(`bg-white border ${colors[color]} rounded-md shadow ${padding} flex items-center justify-center  focus:outline-none hover:text-white ${className}`)}
         onClick={onClick}
       >
         {children}
       </button>
     )
   }
-
+  
   if (type === 'disabled') {
     return (
       <button
-        className={`border bg-gray-300 text-white cursor-not-allowed rounded-md ${padding} flex items-center justify-center  focus:outline-none ${className}`}
+        className={classNames(`border bg-gray-300 text-white cursor-not-allowed rounded-md ${padding} flex items-center justify-center  focus:outline-none ${className}`)}
         onClick={onClick}
         disabled
       >
@@ -40,7 +43,7 @@ export default function Button({
   if (type === 'processing') {
     return (
       <button
-        className={`border bg-gray-300 text-white cursor-not-allowed rounded-md ${padding} flex items-center justify-center  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${className}`}
+        className={classNames(`border bg-gray-300 text-white cursor-not-allowed rounded-md ${padding} flex items-center justify-center  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${className}`)}
         onClick={onClick}
         disabled
       >
@@ -52,7 +55,7 @@ export default function Button({
 
   return (
     <button
-      className={`bg-wi-blue rounded-md shadow ${padding} flex items-center justify-center text-white focus:outline-none ${className}`}
+      className={classNames(`${bg} rounded-md shadow ${padding} flex items-center justify-center text-white focus:outline-none ${className}`)}
       onClick={onClick}
       {...rest}
     >

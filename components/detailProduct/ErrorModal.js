@@ -6,20 +6,20 @@ import {ExclamationIcon, XIcon, XCircleIcon} from '@heroicons/react/outline'
 import {Modal, HorizontalDivider} from '@/components/base'
 import Button from '../button/Button'
 
-export default function NeedLoginModal({open, setOpen, message}) {
+export default function ErrorModal({open, setOpen, message, title}) {
   const router = useRouter()
 
   return (
     <Modal open={open} setOpen={setOpen}>
       <div className="text-center sm:mt-0 sm:w-full">
         <Dialog.Title as="h3" className="text-xl leading-6 tracking-none text-gray-900 text-center mb-4 font-medium">
-          Add to Cart Gagal
+          {title}
         </Dialog.Title>
         <HorizontalDivider />
         <div className="mt-2 flex flex-col items-center space-y-4">
           <p className="text-gray-900 leading-6 mx-2 text-sm ">{message}</p>
 
-          <Button className="ml-auto" onClick={() => setOpen(false)}>
+          <Button className="ml-auto" bg="bg-red-500" onClick={() => setOpen(false)}>
             Tutup
           </Button>
         </div>

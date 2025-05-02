@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useMutation } from 'react-query'
@@ -44,20 +43,28 @@ export default function Verifikasi({ toForm, goToNext }) {
   const { mutate: resendEmail } = useMutation('resend_email', (payload) =>
     fetchAuthPost('users/resend_email_verification', payload)
   )
-
+  // console.log('USER :', JSON.parse(localStorage.user))
   const { isLoading, mutate } = useMutation(
     'verification-token',
     (token) => fetchAuthPost('users/verified_email_token', { token }),
     {
       onSuccess(response) {
         localStorage.removeItem('need_verification')
-        // goToNext()
         const user = JSON.parse(localStorage.user)
         user.is_email_verified = true
-        localStorage.user = JSON.stringify(user, null, 2)
-        localStorage.log_pass = true
-        router.push('/')
+        if (user.pin) {
+          localStorage.user = JSON.stringify(user, null, 2)
+          localStorage.log_pass = true
+          router.push('/')
+        }else{
+          localStorage.need_step_3 = true
+          goToNext()
+        }
+        // const user = JSON.parse(localStorage.user)
+        // user.is_email_verified = true
         // localStorage.user = JSON.stringify(user, null, 2)
+        // localStorage.log_pass = true
+        // router.push('/')
       },
       onError(error) {
         setError(error)

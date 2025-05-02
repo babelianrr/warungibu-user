@@ -20,8 +20,8 @@ export default function Detail() {
   const orderId = router.query.order_id
   // const [total, setTotal] = useState(0)
   const { isLoading, data, isIdle } = useOrderDetail(orderId, 'invoice')
-  const { data: user } = useQuery(['users'], () => fetchAuthGet(`users/${data?.user_id}`), {
-    enabled: Boolean(data?.user_id),
+  const { data: user } = useQuery(['users'], () => fetchAuthGet(`users/${data?.order?.user_id}`), {
+    enabled: Boolean(data?.order?.user_id),
     
   })
   // const mainAddress = user?.outlet_addresses?.find((address) => address.isMain) || user?.outlet_addresses[0]
@@ -41,7 +41,7 @@ export default function Detail() {
   }
 
   if (data) {
-    data?.carts.map((cart, i) => (
+    data?.order?.carts.map((cart, i) => (
       total+=cart.final_unit_price
     ))
   }
@@ -93,7 +93,7 @@ export default function Detail() {
           <section className={`w-full sm:w-3/4 mx-auto relative`}>
             {/* <Image src={Lunas} alt="Sudah Lunas" width={500} height={400} /> transform  -rotate-45 */}
             {
-              data.payment.status === "SUCCESS" ?
+              data?.order?.payment.status === "SUCCESS" ?
                 <>
                   <div className={`invisible  md:visible absolute bottom-1/4 left-1/4 border-4 border-green-300 w-120 h-32 flex items-center justify-center opacity-40`}> 
                     <span className={`text-5xl text-center text-green-300`}>Sudah Lunas</span>
@@ -118,7 +118,7 @@ export default function Detail() {
             <div className="mb-3 flex justify-between items-center">
               <Image src={bicartLogo} alt="Logo" width={65} height={65} />
               <div className="mb-3 flex items-center">
-                <h3 className="w-full text-right sm:text-left text-sm sm:text-base font-semibold text-gray-900 mr-5">Invoice {data?.transaction_number}</h3>
+                <h3 className="w-full text-right sm:text-left text-sm sm:text-base font-semibold text-gray-900 mr-5">Invoice {data?.order?.transaction_number}</h3>
               </div>
             </div>
 
@@ -132,7 +132,7 @@ export default function Detail() {
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center">
                   <p className="text-gray-700 tracking-wide text-xs sm:text-sm">Tanggal</p>
-                  <p className="text-gray-900 col-span-2 text-xs sm:text-sm">: {data?.payment?.invoice_date ? formateReviewDate(data.payment.invoice_date) : '-'}</p>
+                  <p className="text-gray-900 col-span-2 text-xs sm:text-sm">: {data?.order?.payment?.invoice_date ? formateReviewDate(data?.order?.payment.invoice_date) : '-'}</p>
                 </div>
                 <div className="grid grid-cols-3 gap-4 items-center sm:hidden">
                   <p className="text-gray-700 tracking-wide text-xs sm:text-sm">Alamat</p>
@@ -197,7 +197,7 @@ export default function Detail() {
                         </thead>
                         <tbody>
                           {
-                            data?.carts.map((cart, i) => (
+                            data?.order?.carts.map((cart, i) => (
 
                               // cart.batch ? (
                               //   cart?.batch.map((batches, index) => (
@@ -282,7 +282,7 @@ export default function Detail() {
                               Total Pembayaran
                             </td>
                             <td className="px-1 py-0.5 md:px-6 md:py-4 whitespace-nowrap text-xxs sm:text-sm text-gray-900 border border-black">
-                              {currencyConverter(total+data?.shipment?.price)}
+                              {currencyConverter(total+data?.order?.shipment?.price)}
                             </td>
                           </tr>
                         </tbody>

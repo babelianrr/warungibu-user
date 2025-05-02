@@ -165,7 +165,7 @@ export default function Detail({ defaultStock }) {
     >
       {!isLoading && product ? <AddToCartModal open={open} setOpen={setOpen} product={product} /> : null}
       <NeedLoginModal open={needLogin} setOpen={setNeedLogin} />
-      <ErrorModal open={hasError} setOpen={setIsError} message={errorMessage} />
+      <ErrorModal open={hasError} setOpen={setIsError} message={errorMessage} title="Add to Cart Gagal" />
       <main className="py-4 px-4 sm:px-0 sm:max-w-screen-lg lg:max-w-screen-lg xl:max-w-screen-xl mx-auto">
         <div className="hidden sm:block section mb-4">
           <Breadcrumb

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useState, useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -42,7 +41,7 @@ export function Button() {
   return (
     <Dropdown.Button className="bg-dnr-secondary-gray text-gray-400 font-normal py-2.5 px-4 focus:outline-none rounded-md leading-6 flex items-center space-x-3 text-xs">
       {/*<ViewGridIcon className="w-6 h-6" />*/}
-      <img className="icon-custom" src="/assets/category.svg" alt="" />
+      <img className="icon-custom" src="/assets/category.svg" />
       <span className="text-gray-700">Kategori</span>
       <ChevronDownIcon className="w-4 h-4 text-current text-dnr-dark-blue" />
     </Dropdown.Button>

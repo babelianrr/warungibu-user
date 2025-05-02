@@ -3,6 +3,7 @@ export const OrderStatus = {
   arrived: 'Telah Sampai',
   ongoing: 'Sedang Dikirim',
   writeReview: 'Need Review',
+  pending: 'Transaksi Pending',
   finished: 'Transaksi Selesai',
   expired: 'Pesanan Kadaluarsa',
   processed: 'Sedang Diproses',

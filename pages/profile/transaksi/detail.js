@@ -27,6 +27,10 @@ import { generateStatusInformation } from '@/components/profile/transaction/Orde
 import currencyConverter from 'helpers/currencyConverter'
 import formatDate from 'helpers/formatDate'
 import { generatePriceFromCart } from 'helpers/generatePrice'
+import tokenConverter from 'helpers/tokenConverter'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { fetchAuthGet, fetchAuthPost } from 'helpers/fetch'
+
 
 function Timer({ date, time, unit, type, color = 'bg-dnr-dark-orange' }) {
   const { days, hours, minutes, seconds, padStart } = useCountdown(time, unit, date)
@@ -138,7 +142,7 @@ function generateInfoBasedOnStatus(state) {
           const SHIPMENT_FEE = 0
 
           setValue({
-            totalProduct: order.carts.length,
+            totalProduct: order?.carts ? order?.carts?.length : 0,
             totalPrice: TOTAL_PRICE,
             tax: TAX,
             shipmentFee: 0,
@@ -166,7 +170,7 @@ function generateInfoBasedOnStatus(state) {
               <PaymentModal
                 open={paymentModal}
                 setOpen={setPaymentModal}
-                carts={order.carts}
+                carts={order?.carts}
                 PaymentInfoComponent={UpdatePaymentInfo}
               />
               <GrayBorderButton
@@ -213,7 +217,7 @@ function generateInfoBasedOnStatus(state) {
 
         return (
           <>
-            <OrderTrackingModal open={openTracking} setOpen={setOpenTracking} order={order} />
+            <OrderTrackingModal open={openTracking} setOpen={setOpenTracking} order={order?.order} />
             <GrayBorderButton className="w-full py-2.5" display="block" onClick={() => setOpenTracking(true)}>
               Status Pengiriman
             </GrayBorderButton>
@@ -238,7 +242,7 @@ function generateInfoBasedOnStatus(state) {
                 <span className="mr-2">Batas Waktu Pembayaran</span>
                 <Timer
                   color="bg-wi-blue"
-                  date={order?.completion_deadline ? new Date(order?.completion_deadline) : null}
+                  date={order?.order?.completion_deadline ? new Date(order?.order?.completion_deadline) : null}
                   unit="days"
                   time={1}
                   type="daily"
@@ -252,14 +256,14 @@ function generateInfoBasedOnStatus(state) {
                 onConfirm={() => {
                   setOpen(false)
                   router.push(
-                    `/profile/transaksi/detail?state=${OrderStatus.writeReview}&order_id=${order?.id}`,
+                    `/profile/transaksi/detail?state=${OrderStatus.writeReview}&order_id=${order?.order?.id}`,
                     undefined,
                     {
                       shallow: true,
                     }
                   )
                 }}
-                orderId={order?.id}
+                orderId={order?.order?.id}
               />
               {/* <GrayBorderButton className="w-1/3" display="block" hoverState={false}>
               Retur Barang
@@ -375,7 +379,7 @@ function generateInfoBasedOnStatus(state) {
           const SHIPMENT_FEE = 0
 
           setValue({
-            totalProduct: order.carts.length,
+            totalProduct: order?.carts ? order?.carts?.length : 0,
             totalPrice: TOTAL_PRICE,
             tax: TAX,
             shipmentFee: 0,
@@ -387,21 +391,23 @@ function generateInfoBasedOnStatus(state) {
 
         return (
           <div className="space-y-2">
-            <OrderTrackingModal open={openTracking} setOpen={setOpenTracking} order={order} />
+            <OrderTrackingModal open={openTracking} setOpen={setOpenTracking} order={order?.order} />
 
             <PaymentModal
               open={paymentModal}
               setOpen={setPaymentModal}
-              carts={order.carts}
+              carts={order?.carts}
               PaymentInfoComponent={UpdatePaymentInfo}
             />
 
-            {order.status === BackendOrderStatus.COMPLETED && order?.payment.status === 'PENDING' ? (
+            {order?.status === BackendOrderStatus.COMPLETED && order?.payment?.status === 'PENDING' ? (
               <Button className="text-sm w-full text-wi-blue hover:text-white hover:bg-wi-blue border border-wi-blue bg-transparent-force">Barang telah diterima oleh pembeli</Button>
             ) : (
-              <Button color="turqoise" type="border" className="text-sm w-full" onClick={() => setOpenTracking(true)}>
-                Status Pengiriman
-              </Button>
+              order?.order?.carts[0]?.product.product_type !== 'PPOB' && (
+                <Button color="turqoise" type="border" className="text-sm w-full" onClick={() => setOpenTracking(true)}>
+                  Status Pengiriman
+                </Button>
+              )
             )}
 
             {/* <div className="text-gray-900 text-base leading-5 py-2 rounded-md flex-1 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:justify-between items-center">
@@ -443,15 +449,47 @@ function mapPaymentType(payment) {
 }
 
 export default function Detail() {
+  const queryClient = useQueryClient()
   const router = useRouter()
-  const orderId = router.query.order_id
+  const orderId = router?.query?.order_id
+  const transaction_number = router?.query?.transaction_number
+  const customer_no = router?.query?.customer_no
+  const buyer_sku_code = router?.query?.buyer_sku_code
   const state = router.query.state || OrderStatus.waiting
-  const { isLoading, data, isIdle } = useOrderDetail(orderId, state)
-  const { Head, Footer } = generateInfoBasedOnStatus(data?.status === 'PAID' ? OrderStatus.processed : router.query.state)
+  const [load, setLoad] = useState(false)
 
+  if (transaction_number) {
+    const { error } = useQuery(['status'], (payload) => fetchAuthPost(`ppob/${transaction_number}/check`, {
+        buyer_sku_code: buyer_sku_code,
+        customer_no: customer_no,
+      }),{
+        retry:1, // refetch 1 time
+        onSuccess() {
+          setLoad(true)
+        },
+        onError() {
+          setLoad(true)
+        },
+      }
+  
+    )
+  }
+
+  const { isLoading, data, isIdle } = useQuery(['order-detail', orderId, state], () => {
+    if (!orderId) {
+      // Prevent fetch API call when orderId still undefined
+      return Promise.resolve('')
+    }
+    return fetchAuthGet(`orders/${orderId}`)
+  },{
+    enabled: transaction_number ? load : true,
+  })
+
+  const { Head, Footer } = generateInfoBasedOnStatus(data?.order?.status === 'PAID' ? OrderStatus.processed : router.query.state)
+  
   useEffect(() => {
-    if (data?.status) {
-      const newState = generateStatusInformation(data)
+    if (data?.order?.status) {
+      const newState = generateStatusInformation(data?.order)
 
       if (state !== newState) {
         router.push(`/profile/transaksi/detail?state=${newState}&order_id=${orderId}`, undefined, {
@@ -459,7 +497,9 @@ export default function Detail() {
         })
       }
     }
+    
   }, [data])
+
 
   return (
     <CheckoutProvider>
@@ -475,7 +515,7 @@ export default function Detail() {
             />
           </section>
 
-          <section className={`w-full ${data?.payment?.type === 'LOAN' ? 'sm:w-6/12' : ' sm:w-5/12'} mx-auto`}>
+          <section className={`w-full ${data?.order?.payment?.type === 'LOAN' ? 'sm:w-6/12' : ' sm:w-5/12'} mx-auto`}>
             <div className="mb-2">
               <h1 className="text-xl  text-gray-900">Detail Transaksi</h1>
             </div>
@@ -488,7 +528,22 @@ export default function Detail() {
                 <Card>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-700 tracking-wide text-sm">Status Pesanan</span>
-                    <Head order={data} />
+                    {
+                      data?.order?.carts[0]?.product?.product_type === "PPOB" ?
+                      <div className="text-dnr-primary text-sm font-semibold leading-5 tracking-wide flex flex-row-reverse py-2 items-center">
+                        {
+                          data?.order?.status === 'PENDING' ? 
+                            'Transaksi Pending'
+                          :
+                          data?.order?.status === 'CANCELED' ? 
+                            'Transaksi Dibatalkan'
+                          :
+                            'Transaksi Berhasil'
+                        }
+                      </div>
+                      :
+                      <Head order={data} />
+                    }
                   </div>
                   {state === OrderStatus.expired ? (
                     <p className="text-xs text-gray-500 leading-tight mb-2 my-3">
@@ -497,87 +552,154 @@ export default function Detail() {
                     </p>
                   ) : null}
                   <HorizontalDivider className="border-dashed mb-4" color="bg-gray-500" />
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-700 tracking-wide text-sm">Jenis Pembayaran</span>
-                    {/* <div className="text-gray-900 font-semibold">{state}</div> */}
-                    <div className="text-gray-900 font-semibold">{mapPaymentType(data?.payment?.type)}</div>
-                  </div>
+                  {
+                    data?.order?.carts[0]?.product?.product_type !== "PPOB" ?
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-700 tracking-wide text-sm">Jenis Pembayaran</span>
+                        {/* <div className="text-gray-900 font-semibold">{state}</div> */}
+                        <div className="text-gray-900 font-semibold">{mapPaymentType(data?.order?.payment?.type)}</div>
+                      </div>
+                    :
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-700 tracking-wide text-sm">Jenis Layanan</span>
+                        <div className="text-gray-900 font-semibold">Token Listrik</div>
+                      </div>
+                  }
                   {/* <HorizontalDivider className="mb-4" /> */}
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-gray-700 tracking-wide text-sm">No. Transaksi</span>
-                    <div className="text-gray-900 font-semibold">{data?.transaction_number}</div>
+                    <div className="text-gray-900 font-semibold">{data?.order?.transaction_number}</div>
                   </div>
-                  {/* <HorizontalDivider className="mb-4" /> */}
+
+                  {
+                    data?.order?.carts[0]?.product?.product_type === "PPOB" && (
+                      <>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-700 tracking-wide text-sm">No Meter/ID Pel.</span>
+                        <div className="text-gray-900 font-semibold">
+                          {data?.order?.payment?.account_number ?? '-'}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-700 tracking-wide text-sm">Nama</span>
+                        <div className="text-gray-900 font-semibold">
+                          {data?.order?.payment?.account_name ?? '-'}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-700 tracking-wide text-sm">Tarif/Daya</span>
+                        <div className="text-gray-900 font-semibold">
+                          {data?.order?.payment?.channel ?? '-'}
+                        </div>
+                      </div>
+                      </>
+                    )
+                  }
+
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-gray-700 tracking-wide text-sm">Tanggal Pesanan</span>
                     <div className="text-gray-900 font-semibold">
-                      {formatDate(data?.created_at)}
+                      {formatDate(data?.order?.created_at)}
                       {/* {data.created_at ? format(new Date(data.created_at), 'cccc dd MMMM yyyy', {locale: id}) : ''} */}
                     </div>
                     {/* <div className="text-gray-900 font-semibold">Rabu, 01 Januari 2020</div> */}
                   </div>
                   {/* <HorizontalDivider className="mb-4" /> */}
-                  {data?.payment.type === 'LOAN' ? (
+                  {/* {data?.order?.payment?.type === 'LOAN' ? (
                     <>
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-700 tracking-wide text-sm">Batas Pembayaran</span>
                         <div className="text-gray-900 font-semibold">
                           {data.expired_at ? formatDate(new Date(data.expired_at)) : null}
-                          {/* {data.created_at ? format(new Date(data.created_at), 'cccc dd MMMM yyyy', {locale: id}) : ''} */}
                         </div>
-                        {/* <div className="text-gray-900 font-semibold">Rabu, 01 Januari 2020</div> */}
                       </div>
                       <HorizontalDivider className="mb-4" />
                     </>
-                  ) : null}
+                  ) : null} */}
                 </Card>
-
-                <Card>
-                  <div>
-                    <h4 className="text-base text-gray-900 mb-4">Info Pengiriman</h4>
-                    <AddressBox
-                      address={{
-                        // label: data?.shipment.address.label,
-                        description:data?.user.outlet_types_id.address
-                      }}
-                    />
-                  </div>
-                </Card>
+                {
+                  data?.order?.carts[0]?.product?.product_type !== "PPOB" && (
+                    <Card>
+                      <div>
+                        <h4 className="text-base text-gray-900 mb-4">Info Pengiriman</h4>
+                        <AddressBox
+                          address={{
+                            // label: data?.order?.shipment.address.label,
+                            description:data?.order?.user.outlet_types_id.address
+                          }}
+                        />
+                      </div>
+                    </Card>
+                  )
+                }
 
                 <Card>
                   <div>
                     <h4 className="text-base text-gray-900 font-semibold mb-2">Rincian Pesanan</h4>
                     <div className="space-y-4 divide-y divide-gray-500 divide-dashed divide-opacity-40 bg-dnr-secondary-gray p-2 rounded-md">
-                      {data?.carts.map((cart) => (
-                        <div key={cart.id} className="flex items-center pt-2 justify-between">
+                      {data?.order?.carts.map((cart, index) => (
+                        <div key={`${cart.id}${index}`} className="pt-2">
                           <div className="flex space-x-4 items-center flex-1">
                             <div className="border border-gray-300 p-1 rounded-md">
-                              <img
-                                className="w-10"
-                                src={
-                                  cart.product.images.length !== 0 ? cart.product.images[0].url : '/assets/default.png'
-                                }
-                                alt="CDR"
-                              />
+                              {
+                                cart?.product?.product_type === "PPOB" ?
+                                <img
+                                  className="w-10"
+                                  alt="product image"
+                                  src={`${process.env.NEXT_PUBLIC_URL}/assets/token-listrik.png`}
+                                />
+                                :
+                                <img
+                                  className="w-10"
+                                  src={
+                                    (cart.product?.images ? cart.product?.images?.length : 0) !== 0 ? 
+                                      cart.product.images[0].url 
+                                    : 
+                                    '/assets/default.png'
+                                  }
+                                  alt="product image"
+                                />
+                              }
                             </div>
                             <div className="flex-1">
                               <h5 className="text-sm">{cart.product.name}</h5>
                               <span className="text-xs text-gray-500">
-                                {currencyConverter(generatePriceFromCart(cart))} x {cart.quantity} {cart.product.unit}
+                                {currencyConverter(generatePriceFromCart(cart))} 
+                                {
+                                  cart?.product?.product_type !== "PPOB" ?
+                                    `x ${cart.quantity} ${cart.product.unit}`
+                                  :''
+                                }
                               </span>
                             </div>
-                            <div className="flex-1">
+                            {/* data?.order?.carts[0]?.product?.product_type !== "PPOB" ? */}
+                            <div className="w-auto">
                               {cart.discount_percentage != 0 ? (`${cart.discount_percentage} %`) : ""}
                             </div>
                             <span className="text-sm text-gray-900">{currencyConverter(cart.final_unit_price)}</span>
+                            {['arrived', 'finished', 'reviewed', 'expired'].includes(state) ? (
+                              <NavLink href={`/products/${data?.order?.carts[0].product.id}`}>
+                                <Button className="bg-dnr-dark-turqoise text-sm" padding="py-3 px-5">
+                                  Beli Lagi
+                                </Button>
+                              </NavLink>
+                            ) : null}
                           </div>
-                          {['arrived', 'finished', 'reviewed', 'expired'].includes(state) ? (
-                            <NavLink href={`/products/${data?.carts[0].product.id}`}>
-                              <Button className="bg-dnr-dark-turqoise text-sm" padding="py-3 px-5">
-                                Beli Lagi
-                              </Button>
-                            </NavLink>
-                          ) : null}
+                          {
+                            cart?.product?.product_type === 'PPOB' && (
+                              <div className="pl-16">
+                                <div className='grid grid-cols-5 w-full'>
+                                  <p className='col-span-1 text-xs sm:text-sm'>token</p>
+                                  {/* <p className='col-span-4 text-xs sm:text-sm'>: 5345 534534 43646</p> */}
+                                  {/* <p className='col-span-4 text-xs sm:text-sm'>: {Number(data?.order?.payment?.reference_number).toLocaleString('id-ID', {style: 'currency', currency: 'IDR', minimumFractionDigits: 0})}</p> */}
+                                  {/* <p className='col-span-4 text-xs sm:text-sm'>: {data?.order?.payment?.reference_number.split("").map((d) => ('+'))}</p> */}
+                                  {/* <p className='col-span-4 text-xs sm:text-sm'>: {tokenConverter(data?.order?.payment?.reference_number)}</p> */}
+                                  <p className='col-span-4 text-xs sm:text-sm'>: {data?.order?.payment?.reference_number}</p>
+                                </div>
+                              </div>
+                            )
+                          }
+                          
                         </div>
                       ))}
                     </div>
@@ -589,42 +711,63 @@ export default function Detail() {
                   <HorizontalDivider className="border-dashed mb-4" color="bg-gray-500" />
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-gray-700 tracking-wide text-xs">Total Belanja</span>
-                    <div className="text-gray-900 font-semibold">{currencyConverter(data?.payment.total_amount)}</div>
+                    <div className="text-gray-900 font-semibold">{currencyConverter(data?.order?.payment?.total_amount)}</div>
                   </div>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-700 tracking-wide text-xs">
-                      Ongkos Kirim Dari: <span className="text-gray-900">DKI Jakarta</span>
-                    </span>
-                    <div className="text-gray-900 font-semibold">Rp 0</div>
-                  </div>
-                  {data?.payment.status === 'SUCCESS' && data?.payment.promotion_discount > 0 ? (
+                  {
+                    data?.order?.carts[0]?.product?.product_type !== "PPOB" ?
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-gray-700 tracking-wide text-xs">
+                          Ongkos Kirim Dari: <span className="text-gray-900">DKI Jakarta</span>
+                        </span>
+                        <div className="text-gray-900 font-semibold">Rp 0</div>
+                      </div>
+                    :''
+                  }
+                  {data?.order?.payment?.status === 'SUCCESS' && data?.order?.payment?.promotion_discount > 0 ? (
                     <div className="flex justify-between items-center mb-4">
-                      <span className="text-gray-700 tracking-wide text-xs">Discount ({data?.payment.promotion_code})</span>
-                      <div className="text-gray-900 font-semibold">({currencyConverter(data?.payment.promotion_discount)})</div>
+                      <span className="text-gray-700 tracking-wide text-xs">Discount ({data?.order?.payment?.promotion_code})</span>
+                      <div className="text-gray-900 font-semibold">({currencyConverter(data?.order?.payment?.promotion_discount)})</div>
                     </div>
                   ) : null}
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-gray-700 tracking-wide text-xs">Total Pembayaran</span>
-                    <div className="text-gray-900 font-semibold">{currencyConverter(data?.payment.total_amount - data?.payment.promotion_discount)}</div>
+                    <div className="text-gray-900 font-semibold">{currencyConverter(data?.order?.payment.total_amount - data?.order?.payment.promotion_discount)}</div>
                   </div>
                   <HorizontalDivider className="border-dashed mb-2" color="bg-gray-500" />
                   <Footer order={data} router={router} />
-                  {/* {data?.payment.status === 'SUCCESS' ? (
+                  {/* {data?.order?.payment.status === 'SUCCESS' ? (
                     <> */}
                       <HorizontalDivider className="border-none mb-1 mt-1" color="bg-gray-500" />
 
                       <div className="flex space-x-2">
                         <div style={{ width: '100%' }}>
-                          <NavLink href={`/profile/transaksi/invoice/?order_id=${orderId}`}>
-                            <Button className="bg-dnr-dark-turqoise text-sm" padding="py-2 border border-wi-blue px-5 w-full">
-                              Lihat Invoice
-                            </Button>
-                          </NavLink>
+                          {
+                            data?.order?.carts[0]?.product?.product_type !== "PPOB" ?
+                              <NavLink href={`/profile/transaksi/invoice/?order_id=${orderId}`}>
+                                <Button className="bg-dnr-dark-turqoise text-sm" padding="py-2 border border-wi-blue px-5 w-full">
+                                  Lihat Invoice
+                                </Button>
+                              </NavLink>
+                            :
+                              <NavLink href={`/profile/transaksi/invoiceListrik/?order_id=${data?.order?.transaction_number}`}>
+                                <Button className="bg-dnr-dark-turqoise text-sm" padding="py-2 border border-wi-blue px-5 w-full">
+                                  Lihat Invoice
+                                </Button>
+                              </NavLink>
+                          }
                         </div>
                         <div>
-                          <a className="flex border border-wi-blue bg-transparent rounded-md py-2 px-3 w-full" href={`${process.env.NEXT_PUBLIC_BASE_URL}orders/${data?.transaction_number}/invoice`}>
-                            <DownloadIcon className="w-5 h-5 text-wi-blue leading-tight" />
-                          </a>
+                          {
+                            data?.order?.carts[0]?.product?.product_type !== "PPOB" ?
+                              <a className="flex border border-wi-blue bg-transparent rounded-md py-2 px-3 w-full" href={`${process.env.NEXT_PUBLIC_BASE_URL}orders/${data?.order?.transaction_number}/invoice`}>
+                                <DownloadIcon className="w-5 h-5 text-wi-blue leading-tight" />
+                              </a>
+                            :                                                                                           
+                              <a className="flex border border-wi-blue bg-transparent rounded-md py-2 px-3 w-full" href={`${process.env.NEXT_PUBLIC_BASE_URL}orders/${data?.order?.transaction_number}/invoice-ppob`}>
+                                <DownloadIcon className="w-5 h-5 text-wi-blue leading-tight" />
+                              </a>
+
+                          }
                         </div>
                       </div>
                     {/* </>

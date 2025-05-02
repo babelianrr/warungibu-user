@@ -25,23 +25,18 @@ function Login() {
       localStorage.token = response.token
       localStorage.user = JSON.stringify(response.user, null, 2)
 
-      // const user = JSON.parse(localStorage.user)
-      // user.is_email_verified = true
-      // localStorage.user = JSON.stringify(user, null, 2)
-      // localStorage.log_pass = true
-
       // if (!response.user.is_email_verified) {
       if (response.user.role_status === 'BASIC_USER') {
         localStorage.need_verification = true
         router.push('/register/incomplete-customer')
       } 
-      // else if (response.step_3 === false) {
-      //   localStorage.need_step_3 = true
-      //   router.push('/register/incomplete-customer')
-      // } else if (response.step_4 === false) {
-      //   localStorage.need_step_4 = true
-      //   router.push('/register/incomplete-customer')
-      // } 
+      else if (!response.user.pin) {
+        localStorage.need_step_3 = true
+        router.push('/register/incomplete-customer')
+      } else if (!response.user.pin) {
+        localStorage.need_step_4 = true
+        router.push('/register/incomplete-customer')
+      } 
       else {
         const user = JSON.parse(localStorage.user)
         user.is_email_verified = true
@@ -62,8 +57,10 @@ function Login() {
       setIsDisabled(true)
       if (err.errorCode === 'CAN_NOT_LOGIN') {
         setErrorMessage('Phone/Password salah')
-      } else if (err.error_code === 'API_VALIDATION_ERROR') {
+      } else if (err.errorCode === 'API_VALIDATION_ERROR') {
         setErrorMessage('Data harus diisi')
+      }  else if (err.errorCode === 'UNAUTHORIZED_USER') {
+        setErrorMessage('User belum diverifikasi oleh admin')
       } else {
         setErrorMessage('Silahkan coba lagi nanti')
       }

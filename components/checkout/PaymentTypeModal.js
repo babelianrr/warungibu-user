@@ -69,15 +69,21 @@ export default function PaymentTypeMethod({open, setOpen, DISCOUNT_VALUE, carts,
         location: carts[0].location,
       },
       payment: {
-        total_price: value.totalPrice + value.tax - discount,
+        // total_price: value.totalPrice + value.tax - discount,
+        total_price: value.totalPrice - discount,
         payment_type: 'LOAN',
         // payment_type: paymentMethod.identifier,
       },
       carts: carts.map((item) => item.id),
     }
 
-    createOrder(payload)
+    // createOrder(payload)
+
+    localStorage.payloadorder = JSON.stringify(payload, null, 2)
+
+    router.push('checkout/pin-confirmation')
   }
+
 
   return (
     <Modal open={open} setOpen={setOpen} overflowHidden={false}>

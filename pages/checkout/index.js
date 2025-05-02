@@ -80,23 +80,8 @@ function Checkout() {
     },
   ]
 
-  const { isLoading: isCreateOrder, mutate: createOrder } = useCreateOrder(
-    (response) => {
-      setCountValue({ count: 0 })
-      // router.push(`/profile/transaksi/detail?state=${paymentMethod.key}&order_id=${response.id}`)
-      router.push(`/profile/transaksi/detail?state=Sedang%20Diproses&order_id=${response.id}`)
-    },
-    (err) => {
-      setError(err)
-    }
-  )
 
   function handleCreateOrder() {
-    // if (paymentMethod.id === 1) {
-    //   setPaymentModal(true)
-    //   return
-    // }
-
     const payload = {
       shipment: {
         // address_id: mainAddress.id, // Later using real address
@@ -112,8 +97,10 @@ function Checkout() {
       },
       carts: data.map((item) => item.id),
     }
+    localStorage.payloadorder = JSON.stringify(payload, null, 2)
 
-    createOrder(payload)
+    // createOrder(payload)
+    router.push('checkout/pin-confirmation')
   }
 
   return (
@@ -250,7 +237,7 @@ function Checkout() {
                 // TAX={TAX}
                 SHIPMENT_FEE={SHIPMENT_FEE}
                 discount={discount}
-                isCreateOrder={isCreateOrder}
+                // isCreateOrder={isCreateOrder}
                 handleCreateOrder={handleCreateOrder}
                 error={error}
               />
@@ -273,11 +260,12 @@ function SummaryOrder({
   // TAX,
   SHIPMENT_FEE,
   discount,
-  isCreateOrder,
+  // isCreateOrder,
   handleCreateOrder,
   error,
 
 }) {
+  const router = useRouter()
   const { value, setValue } = useContext(CheckoutContext)
   const { data: paymentTermData, isLoading: isLoadingPaymentTerm } = useQuery(['payment_term', authenticatedUser().id], () =>
     fetchAuthGet(`payment_terms/active`)
@@ -379,7 +367,7 @@ function SummaryOrder({
         <Button
           className="w-full mb-4"
           // type={paymentMethod === undefined ? 'disabled' : isCreateOrder ? Button.PROCESSING : ''}
-          type={isCreateOrder ? Button.PROCESSING : ''}
+          // type={isCreateOrder ? Button.PROCESSING : ''}
           onClick={handleCreateOrder}
         >
           Bayar

@@ -2,20 +2,43 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { ArrowRightIcon, CheckIcon } from '@heroicons/react/outline'
 import { Card, HorizontalDivider } from '@/components/base'
-import { Layout, FormInformation, FormOutlet, FormLicense, Verifikasi, CreateAddress } from '@/components/register'
+import { Layout, FormInformation, FormOutlet, FormLicense, Verifikasi, CreateAddress, CustomerPin, CustomerPinConfirmation, CompleteCustomer } from '@/components/register'
 import { fetchGet } from 'helpers/fetch'
 
 export default function InclompleteCustomerRegister({ outletTypes }) {
   const router = useRouter()
   const newCustomerStep = [
     {
+      // id: 1,
+      // label: 'Informasi Data Diri',
+      // Component: FormInformation,
       id: 2,
       label: 'Verifikasi',
       Component: Verifikasi,
-    }
+    },
+    {
+      id: 2,
+      label: 'Verifikasi',
+      Component: Verifikasi,
+    },
+    {
+      id: 3,
+      label: 'Customer Pin',
+      Component: CustomerPin,
+    },
+    {
+      id: 4,
+      label: 'Konfirmasi Customer Pin',
+      Component: CustomerPinConfirmation,
+    },
+    {
+      id: 5,
+      label: 'Finish',
+      Component: CompleteCustomer,
+    },
   ]
-  // const startStep = typeof window !== 'undefined' && localStorage.need_verification ? 1 : typeof window !== 'undefined' && localStorage.need_step_3 ? 2 : typeof window !== 'undefined' && localStorage.need_step_4 ? 3 : 0
-  const startStep = 1
+  const startStep = typeof window !== 'undefined' && localStorage.need_verification ? 1 : typeof window !== 'undefined' && localStorage.need_step_3 ? 2 : typeof window !== 'undefined' && localStorage.need_step_4 ? 3 : 0
+  // const startStep = 1
   const [stepNumber, setStepNumber] = useState(startStep)
   const [step, setStep] = useState(newCustomerStep[stepNumber])
 
@@ -25,39 +48,26 @@ export default function InclompleteCustomerRegister({ outletTypes }) {
   }
 
   function goToNext() {
-    // const nextStep = stepNumber + 1
-    const nextStep = stepNumber
+    const nextStep = stepNumber + 1
+    // const nextStep = stepNumber
     setStepNumber(nextStep)
     setStep(newCustomerStep[nextStep])
   }
 
-  function logoutUser() {
-    localStorage.removeItem('google_token')
-    localStorage.removeItem('email')
-    localStorage.removeItem('name')
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('need_verification')
-    localStorage.removeItem('log_pass')
-    router.push('/login')
-  }
-
-  const maxWidth = step?.id === 4 ? 'p-4 w-full sm:max-w-4xl' : 'p-4 w-full sm:max-w-xl'
+  const maxWidth = 'p-4 w-full sm:max-w-xl'
 
   return (
     <Layout>
       <section className={`${maxWidth} self-center flex-1 flex z-10`}>
         <div className="w-full">
           <div className="flex justify-between cursor-pointer">
-            <div className="text-dnr-turqoise text-lg mb-2" onClick={logoutUser}>
-              <span>Keluar</span>
-            </div>
-            {step?.id === 4 ? (
+            <h4 className="text-dnr-turqoise text-lg  mb-2">Daftar</h4>
+            {/* {step?.id === 4 ? (
               <div className="text-sm text-gray-500 flex items-center space-x-2" onClick={goToNext}>
                 <ArrowRightIcon className="w-4 h-4" />
                 <span>Lewati</span>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full">
             <Card className="w-full mb-11">

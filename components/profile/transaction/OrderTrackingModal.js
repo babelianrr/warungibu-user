@@ -9,18 +9,18 @@ import { useQuery } from 'react-query'
 import { fetchAuthGet } from 'helpers/fetch'
 
 function generateMessageEvent(event) {
-  if (event.status === 'PROCESSED') {
+  if (event?.status === 'PROCESSED') {
     return 'Pesanan sedang di proses'
   }
-  if (event.status === 'ONGOING') {
+  if (event?.status === 'ONGOING') {
     return 'Pesanan sedang di kirim'
   }
 
-  if (event.status === 'DELIVERED') {
+  if (event?.status === 'DELIVERED') {
     return 'Pesananan telah sampai'
   }
 
-  if (event.status === 'COMPLETED') {
+  if (event?.status === 'COMPLETED') {
     return 'Pesananan telah selesai'
   }
 }
@@ -53,7 +53,7 @@ export default function OrderTrackingModal({open, setOpen, order}) {
         <HorizontalDivider className="mb-4" />
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-700 tracking-wide text-xs">Nomor Resi</span>
-          <div className="text-gray-900 font-semibold">{shipment.track_number}</div>
+          <div className="text-gray-900 font-semibold">{shipment?.track_number}</div>
         </div>
         <HorizontalDivider className="mb-4" />
         <div className="flex justify-between items-center mb-2">
@@ -64,7 +64,7 @@ export default function OrderTrackingModal({open, setOpen, order}) {
 
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-700 tracking-wide text-xs">Tanggal Pengiriman</span>
-          <div className="text-gray-900 font-semibold">{ongoingEvent ? formatDate(ongoingEvent.timestamp) : null}</div>
+          <div className="text-gray-900 font-semibold">{ongoingEvent ? formatDate(ongoingEvent?.timestamp) : null}</div>
         </div>
         <HorizontalDivider className="mb-4" />
 
@@ -135,10 +135,10 @@ export default function OrderTrackingModal({open, setOpen, order}) {
                     .slice(1)
                     .reverse()
                     .map((event, index) => (
-                      <li className="flex items-center space-x-6 pb-8" key={event.timestamp}>
+                      <li className="flex items-center space-x-6 pb-8" key={event?.timestamp}>
                         <div>
-                          <p className="text-gray-900 text-right font-semibold">{formatTime(event.timestamp)}</p>
-                          <p className="text-gray-700 text-xs">{formatSimpleDate(event.timestamp)}</p>
+                          <p className="text-gray-900 text-right font-semibold">{formatTime(event?.timestamp)}</p>
+                          <p className="text-gray-700 text-xs">{formatSimpleDate(event?.timestamp)}</p>
                         </div>
 
                         <div className="relative">
@@ -158,7 +158,7 @@ export default function OrderTrackingModal({open, setOpen, order}) {
                       </li>
                     ))
                 : null}
-              {payment.status === 'SUCCESS' ? (
+              {payment?.status === 'SUCCESS' ? (
                 <li className="flex items-center space-x-6">
                   <div>
                     <p className="text-gray-900 text-right font-semibold">{formatTime(payment.updated)}</p>

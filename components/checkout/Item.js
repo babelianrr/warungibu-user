@@ -4,12 +4,21 @@ import currencyConverter from 'helpers/currencyConverter'
 import {generatePricePromotion} from "../../helpers/generatePrice";
 
 export default function Item({cart}) {
+  console.log('Item :', cart)
   return (
     <li>
       <div className="flex space-x-6 items-center my-4">
         <div className="bg-white rounded-md shadow">
           <img
-            src={cart.product.images.length !== 0 ? cart.product.images[0].url : '/assets/default.png'}
+            src={
+                cart.product.images.length !== 0 ? 
+                  cart.product.images[0].url 
+                : 
+                cart?.product?.product_type === "PPOB" ?
+                  `${process.env.NEXT_PUBLIC_URL}/assets/token-listrik.png`
+                :
+                '/assets/default.png'
+              }
             alt="Product Image"
             className="h-20"
           />

@@ -16,8 +16,8 @@ export default function ProductList({className}) {
 
   return (
     <section className={`grid grid-cols-2 sm:grid-cols-6 sm:grid-rows-1 gap-2 mt-5 mb-16 ${className}`}>
-      {topProducts?.map((product) => (
-        <Card key={product.id} product={product} isFavorite={product.is_favorite} />
+      {topProducts?.map((product, index) => (
+        <Card key={`${product.id}${index}`} product={product} isFavorite={product.is_favorite} />
       ))}
     </section>
   )

@@ -311,11 +311,20 @@ function generateInformationBasedOnstatus(status) {
               >
                 Lihat Detail Transaksi
               </GrayBorderButton>
-              <NavLink href={`/products/${order.carts[0].product.id}`}>
-                <Button className="bg-wi-blue text-sm leading-none border border-wi-blue shadow" padding="py-3 px-4">
-                  Beli Lagi
-                </Button>
-              </NavLink>
+              {
+                order?.carts[0]?.product?.product_type === 'PPOB' ?
+                  <NavLink href={`/token-listrik`}>
+                    <Button className="bg-wi-blue text-sm leading-none border border-wi-blue shadow" padding="py-3 px-4">
+                      Beli Lagi
+                    </Button>
+                  </NavLink>
+                :
+                  <NavLink href={`/products/${order.carts[0].product.id}`}>
+                    <Button className="bg-wi-blue text-sm leading-none border border-wi-blue shadow" padding="py-3 px-4">
+                      Beli Lagi
+                    </Button>
+                  </NavLink>
+              }
             </div>
           )
         },
@@ -447,14 +456,22 @@ function generateInformationBasedOnstatus(status) {
           return (
             <div className="flex items-center space-x-3">
               {order.status == BackendOrderStatus.COMPLETED && status === OrderStatus.tempo ? (
-                <p className="text-dnr-primary underline leading-6 text-sm cursor-pointer">
-                  Pesananan telah sampai
-                </p>
+                order?.carts[0]?.product?.product_type !== 'PPOB' && (
+                  <p className="text-dnr-primary underline leading-6 text-sm cursor-pointer">
+                    Pesananan telah sampai
+                  </p>
+                )
               ) : null}
               <GrayBorderButton
                 className="leading-none text-sm text-gray-500 hidden sm:block shadow"
                 padding="py-3 px-3"
-                onClick={() => router.push(`/profile/transaksi/detail?state=${status}&order_id=${orderId}`)}
+                onClick={() => router.push(
+                  // if product type ppob 
+                  order?.carts[0]?.product?.product_type === 'PPOB' ?
+                  `/profile/transaksi/detail?state=${status}&order_id=${orderId}&transaction_number=${order?.transaction_number}&customer_no=${order?.payment?.account_number}&buyer_sku_code=${order?.payment?.account_bank}`
+                  :
+                  `/profile/transaksi/detail?state=${status}&order_id=${orderId}`
+                )}
               >
                 Lihat Detail Transaksi
               </GrayBorderButton>
@@ -528,7 +545,7 @@ export default function OrderCard({item, refetch}) {
   const router = useRouter()
 
   const {carts} = item
-
+  
   const cart = carts[0]
 
   return (
@@ -573,7 +590,14 @@ export default function OrderCard({item, refetch}) {
           </div>
           <ChevronRightIcon
             className="w-4 h-4 text-gray-500 block sm:hidden"
-            onClick={() => router.push(`/profile/transaksi/detail?state=${status}&order_id=${item.id}`)}
+            onClick={() => 
+              router.push(
+                item?.carts[0]?.product?.product_type === 'PPOB' ?
+                  `/profile/transaksi/detail?state=${status}&order_id=${item.id}&transaction_number=${item?.transaction_number}&customer_no=${item?.payment?.account_number}&buyer_sku_code=${item?.payment?.account_bank}`
+                :
+                  `/profile/transaksi/detail?state=${status}&order_id=${item.id}`
+              )
+            }
           />
         </div>
       </div>
@@ -592,20 +616,35 @@ export default function OrderCard({item, refetch}) {
           <div className="flex items-center justify-between">
             <div className="flex space-x-3 items-center">
               <div className="border border-gray-300 p-1 rounded-md">
+              {
+                cart?.product?.product_type === "PPOB" ?
+                  <img
+                    className="w-10"
+                    alt="product image"
+                    src={`${process.env.NEXT_PUBLIC_URL}/assets/token-listrik.png`}
+                  />
+                :
                 <img
                   className="w-10"
                   src={
-                    cart?.product?.images && cart.product.images[0]
-                      ? cart?.product?.images[0].url
-                      : '/assets/default.png'
+                    cart?.product?.images && cart.product.images[0] ? 
+                      cart?.product?.images[0].url
+                    : 
+                    '/assets/default.png'
                   }
                   alt={cart?.product?.name}
                 />
+              }
               </div>
               <div className="text-left">
                 <h5 className="text-xs sm:text-base font-medium tracking-none text-gray-900">{cart.product.name}</h5>
                 <span className="text-xs text-gray-700">
-                  {currencyConverter(generatePrice(cart.product))} x {cart.quantity} pcs
+                  {currencyConverter(generatePrice(cart.product))} 
+                  {
+                    cart.product.product_type !== 'PPOB' && (
+                      `x ${cart.quantity} pcs`
+                    )
+                  }
                 </span>
               </div>
             </div>

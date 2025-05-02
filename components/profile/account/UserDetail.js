@@ -1,13 +1,17 @@
 import {useState} from 'react'
 import {LockClosedIcon, PencilIcon} from '@heroicons/react/outline'
+import Image from 'next/image'
 import {GrayBorderButton} from '../../button'
 import {HorizontalDivider} from '../../base'
 import UpdateUserModal from './UpdateUserModal'
 import UpdatePasswordModal from './UpdatePasswordModal'
 import {authenticatedUser} from 'helpers/isAuthenticated'
 import currencyConverter from 'helpers/currencyConverter'
+import UbahPin from './../../../public/assets/password-reset.png'
+import { useRouter } from 'next/router'
 
 export default function UserDetail({user, refetch}) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [openChangePassword, setOpenChangePassword] = useState(false)
 
@@ -85,16 +89,16 @@ export default function UserDetail({user, refetch}) {
       <section>
         <HorizontalDivider />
         <div className="flex space-x-4 justify-end">
-          {/* <GrayBorderButton
-            className="py-2 text-sm flex items-center space-x-2 font-light"
-            onClick={() => setOpen(true)}
+          <GrayBorderButton
+            className="py-2 text-xs sm:text-sm flex items-center space-x-2 font-light"
+            onClick={() => router.push('/profile/customer-pin')}
             hoverColor="hover:bg-dnr-dark-turqoise"
           >
-            <PencilIcon className="w-4 h-4 svg-width-custom" />
-            <span>Ubah Data Diri</span>
-          </GrayBorderButton> */}
+            <Image src={UbahPin} height={20} width={20}/>
+            <span>Ubah PIN Transaksi</span>
+          </GrayBorderButton>
           <GrayBorderButton
-            className="py-2 text-sm flex items-center space-x-2 font-light"
+            className="py-2 text-xs sm:text-sm flex items-center space-x-2 font-light"
             onClick={() => setOpenChangePassword(true)}
             hoverColor="hover:bg-dnr-dark-turqoise"
           >
