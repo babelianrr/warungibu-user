@@ -4,7 +4,7 @@ export default function Category({categories, type}) {
   return (
     <div className="mt-4 sm:mt-10 relative mb-4">
       {type === 'produk' &&
-        <img src="/assets/delivery_man.png" className=" absolute bottom-0 hidden sm:block" width={200} />
+        <img alt="" src="/assets/delivery_man.png" className=" absolute bottom-0 hidden sm:block" width={200} />
       }
       <div className="bg-white py-3 px-5 sm:py-5 sm:px-5 flex flex-col sm:flex-row rounded-md shadow-sm sm:space-x-4 w-full sm:w-11/12 ml-auto space-y-0 sm:space-y-4 sm:space-y-0">
         <section className="text-dnr-light-gray text-sm w-full sm:w-1/3 sm:ml-28">
@@ -25,7 +25,7 @@ export default function Category({categories, type}) {
           </h3>
           {type === 'produk' ?
             <p className="leading-tight font-light mb-1 hidden sm:block">
-              Kami menyediakan berbagai macam produk, Dari produk consumers, obat dan vitamin, alat kesehatan, produk
+              Kami menyediakan berbagai macam produk, Dari produk konsumsi, obat dan vitamin, alat kesehatan, produk
               kecantikan, dan masih banyak lagi lainnya.
             </p>
             :
