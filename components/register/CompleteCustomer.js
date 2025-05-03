@@ -26,10 +26,10 @@ function CompleteCustomer() {
       <div className="space-y-4">
         <Card className="w-full shadow-none">
           <div className='w-full flex flex-row justify-center mt-5 mb-6'>
-            <Image src={SuccesImage}/>
+            <Image src={SuccesImage} alt=""/>
           </div>
-          <p className='text-center text-gray-400 text-base mt-8'>Pembuatan PIN transaksi</p>
-          <p className='text-center text-gray-400 text-base'>anda berhasil, selamat berbelanja</p>
+          {/* <p className='text-center text-gray-400 text-base mt-8'>Verifikasi</p> */}
+          <p className='text-center text-gray-400 text-base'>Verifikasi anda berhasil, selamat berbelanja</p>
           <Button 
             className="w-full font-normal text-sm mt-20" 
             onClick={() => handleGoToHome()}

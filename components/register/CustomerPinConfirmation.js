@@ -49,7 +49,7 @@ function CustomerPinConfirmation({ toForm, goToNext }) {
   })
 
   function handleSubmitPin() {
-    if (localStorage.pin !== `${pin1}${pin2}${pin3}${pin4}${pin5}${pin6}`) {
+    if (localStorage.getItem('pin') !== `${pin1}${pin2}${pin3}${pin4}${pin5}${pin6}`) {
       setErrorMessage('Konfirmasi Password Tidak Sesuai')
     }else{
       mutate({
@@ -151,7 +151,7 @@ function CustomerPinConfirmation({ toForm, goToNext }) {
             <div className='w-14 h-14'/>
             <ButtonNumber number={0} onClick={(number) => handlePin(number)}/>
             <div className='border-2 border-wi-blue bg-gray-300 rounded-full w-14 h-14 flex justify-center items-center cursor-pointer' onClick={() => backSpace()}>
-              <Image src={BackSpace}/>
+              <Image src={BackSpace} alt="" />
             </div>
           </div>
           <Button 

@@ -21,18 +21,19 @@ export default function InclompleteCustomerRegister({ outletTypes }) {
       label: 'Verifikasi',
       Component: Verifikasi,
     },
+    // {
+    //   id: 3,
+    //   label: 'Customer Pin',
+    //   Component: CustomerPin,
+    // },
+    // {
+    //   id: 4,
+    //   label: 'Konfirmasi Customer Pin',
+    //   Component: CustomerPinConfirmation,
+    // },
     {
+      // id: 5,
       id: 3,
-      label: 'Customer Pin',
-      Component: CustomerPin,
-    },
-    {
-      id: 4,
-      label: 'Konfirmasi Customer Pin',
-      Component: CustomerPinConfirmation,
-    },
-    {
-      id: 5,
       label: 'Finish',
       Component: CompleteCustomer,
     },

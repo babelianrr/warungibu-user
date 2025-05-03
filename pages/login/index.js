@@ -30,13 +30,13 @@ function Login() {
         localStorage.need_verification = true
         router.push('/register/incomplete-customer')
       } 
-      else if (!response.user.pin) {
-        localStorage.need_step_3 = true
-        router.push('/register/incomplete-customer')
-      } else if (!response.user.pin) {
-        localStorage.need_step_4 = true
-        router.push('/register/incomplete-customer')
-      } 
+      // else if (!response.user.pin) {
+      //   localStorage.need_step_3 = true
+      //   router.push('/register/incomplete-customer')
+      // } else if (!response.user.pin) {
+      //   localStorage.need_step_4 = true
+      //   router.push('/register/incomplete-customer')
+      // } 
       else {
         const user = JSON.parse(localStorage.user)
         user.is_email_verified = true
